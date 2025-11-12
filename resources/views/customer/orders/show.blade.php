@@ -46,26 +46,35 @@
                 </div>
                 <div class="text-end">
                     @php
+                        // Status mapping sesuai dengan Order Model
                         $statusColors = [
                             'pending' => 'warning',
                             'processing' => 'info',
                             'completed' => 'success',
-                            'cancelled' => 'danger',
-                            'ready' => 'primary'
+                            'cancelled' => 'danger'
                         ];
                         $statusLabels = [
                             'pending' => 'Menunggu Konfirmasi',
                             'processing' => 'Sedang Diproses',
                             'completed' => 'Selesai',
-                            'cancelled' => 'Dibatalkan',
-                            'ready' => 'Siap Diambil'
+                            'cancelled' => 'Dibatalkan'
+                        ];
+                        
+                        // Icon untuk setiap status
+                        $statusIcons = [
+                            'pending' => 'clock-history',
+                            'processing' => 'gear',
+                            'completed' => 'check-circle',
+                            'cancelled' => 'x-circle'
                         ];
                     @endphp
                     <span class="badge bg-{{ $statusColors[$order->status] ?? 'secondary' }} fs-6 mb-2">
+                        <i class="bi bi-{{ $statusIcons[$order->status] ?? 'info-circle' }} me-1"></i>
                         {{ $statusLabels[$order->status] ?? ucfirst($order->status) }}
                     </span>
                     <br>
                     @php
+                        // Payment status mapping
                         $paymentColors = [
                             'unpaid' => 'danger',
                             'paid' => 'success',
@@ -76,41 +85,123 @@
                             'paid' => 'Lunas',
                             'partial' => 'Dibayar Sebagian'
                         ];
+                        $paymentIcons = [
+                            'unpaid' => 'x-circle',
+                            'paid' => 'check-circle',
+                            'partial' => 'exclamation-circle'
+                        ];
                     @endphp
                     <span class="badge bg-{{ $paymentColors[$order->payment_status] ?? 'secondary' }} fs-6">
+                        <i class="bi bi-{{ $paymentIcons[$order->payment_status] ?? 'info-circle' }} me-1"></i>
                         {{ $paymentLabels[$order->payment_status] ?? ucfirst($order->payment_status) }}
                     </span>
                 </div>
             </div>
 
-            <!-- Progress Timeline -->
+            <!-- Progress Timeline - Sesuai dengan status yang ada -->
             <div class="order-timeline">
-                <div class="timeline-item {{ in_array($order->status, ['pending', 'processing', 'ready', 'completed']) ? 'active' : '' }}">
-                    <div class="timeline-dot"></div>
+                <!-- Step 1: Pending -->
+                <div class="timeline-item {{ in_array($order->status, ['pending', 'processing', 'completed']) ? 'active' : ($order->status === 'cancelled' ? 'cancelled' : '') }}">
+                    <div class="timeline-dot">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
                     <div class="timeline-content">
-                        <h6>Order Dibuat</h6>
-                        <small class="text-light">{{ $order->created_at->format('d M Y, H:i') }}</small>
+                        <h6>Menunggu Konfirmasi</h6>
+                        <small class="text-light">
+                            {{ $order->created_at->format('d M Y, H:i') }}
+                        </small>
                     </div>
                 </div>
-                <div class="timeline-item {{ in_array($order->status, ['processing', 'ready', 'completed']) ? 'active' : '' }}">
-                    <div class="timeline-dot"></div>
+
+                <!-- Step 2: Processing -->
+                <div class="timeline-item {{ in_array($order->status, ['processing', 'completed']) ? 'active' : ($order->status === 'cancelled' ? 'cancelled' : '') }}">
+                    <div class="timeline-dot">
+                        <i class="bi bi-gear"></i>
+                    </div>
                     <div class="timeline-content">
                         <h6>Sedang Diproses</h6>
-                        <small class="text-light">{{ $order->status === 'processing' ? 'Saat ini' : '-' }}</small>
+                        <small class="text-light">
+                            @if($order->status === 'processing')
+                                Saat ini
+                            @elseif($order->status === 'completed' && $order->updated_at)
+                                {{ $order->updated_at->format('d M Y, H:i') }}
+                            @else
+                                -
+                            @endif
+                        </small>
+                        @if($order->status === 'processing' && $order->karyawan)
+                            <br><small class="text-info">
+                                <i class="bi bi-person-badge me-1"></i>{{ $order->karyawan->name }}
+                            </small>
+                        @endif
                     </div>
                 </div>
-                <div class="timeline-item {{ in_array($order->status, ['ready', 'completed']) ? 'active' : '' }}">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h6>Siap Diambil</h6>
-                        <small class="text-light">{{ $order->status === 'ready' ? 'Saat ini' : '-' }}</small>
+
+                <!-- Step 3: Completed -->
+                <div class="timeline-item {{ $order->status === 'completed' ? 'active' : ($order->status === 'cancelled' ? 'cancelled' : '') }}">
+                    <div class="timeline-dot">
+                        <i class="bi bi-check-circle"></i>
                     </div>
-                </div>
-                <div class="timeline-item {{ $order->status === 'completed' ? 'active' : '' }}">
-                    <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h6>Selesai</h6>
-                        <small class="text-light">{{ $order->status === 'completed' && $order->delivery_date ? \Carbon\Carbon::parse($order->delivery_date)->format('d M Y, H:i') : '-' }}</small>
+                        <small class="text-light">
+                            @if($order->status === 'completed')
+                                @if($order->picked_up_at)
+                                    Diambil: {{ \Carbon\Carbon::parse($order->picked_up_at)->format('d M Y, H:i') }}
+                                @else
+                                    <span class="badge bg-primary">Siap Diambil</span>
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Step 4: Cancelled (jika dibatalkan) -->
+                @if($order->status === 'cancelled')
+                    <div class="timeline-item cancelled">
+                        <div class="timeline-dot">
+                            <i class="bi bi-x-circle"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h6>Dibatalkan</h6>
+                            <small class="text-light">
+                                {{ $order->updated_at->format('d M Y, H:i') }}
+                            </small>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Status Info Detail -->
+            <div class="alert alert-{{ $statusColors[$order->status] ?? 'secondary' }} mb-0" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-{{ $statusIcons[$order->status] ?? 'info-circle' }} fs-4 me-3"></i>
+                    <div>
+                        @switch($order->status)
+                            @case('pending')
+                                <strong>Order Menunggu Konfirmasi</strong>
+                                <p class="mb-0 small">Order Anda sedang menunggu konfirmasi dari admin. Silakan lakukan pembayaran untuk mempercepat proses.</p>
+                                @break
+                            @case('processing')
+                                <strong>Order Sedang Diproses</strong>
+                                <p class="mb-0 small">Laundry Anda sedang dalam proses pencucian. Kami akan memberitahu ketika selesai.</p>
+                                @break
+                            @case('completed')
+                                @if($order->picked_up_at)
+                                    <strong>Order Selesai & Sudah Diambil</strong>
+                                    <p class="mb-0 small">Terima kasih telah menggunakan layanan kami!</p>
+                                @else
+                                    <strong>Order Siap Diambil!</strong>
+                                    <p class="mb-0 small">Laundry Anda sudah selesai dan siap untuk diambil. Jangan lupa bawa bukti order ini.</p>
+                                @endif
+                                @break
+                            @case('cancelled')
+                                <strong>Order Dibatalkan</strong>
+                                <p class="mb-0 small">Order ini telah dibatalkan.</p>
+                                @break
+                        @endswitch
                     </div>
                 </div>
             </div>
@@ -217,14 +308,66 @@
                 <strong>{{ \Carbon\Carbon::parse($order->pickup_date)->format('d M Y, H:i') }}</strong>
             </div>
             @if($order->delivery_date)
-                <div>
+                <div class="mb-3">
                     <small class="text-light d-block">Tanggal Selesai</small>
                     <strong>{{ \Carbon\Carbon::parse($order->delivery_date)->format('d M Y, H:i') }}</strong>
                 </div>
             @endif
+            @if($order->picked_up_at)
+                <div>
+                    <small class="text-light d-block">Tanggal Diambil</small>
+                    <strong>{{ \Carbon\Carbon::parse($order->picked_up_at)->format('d M Y, H:i') }}</strong>
+                </div>
+            @endif
         </div>
 
-        <!-- Payment Info -->
+        <!-- Transaction Info -->
+        @if($order->transaction)
+        <div class="data-card mb-4">
+            <h4 class="mb-4">
+                <i class="bi bi-receipt-cutoff me-2"></i>Info Transaksi
+            </h4>
+            <div class="mb-3">
+                <small class="text-light d-block">Metode Pembayaran</small>
+                <strong class="text-capitalize">
+                    @switch($order->transaction->payment_method)
+                        @case('transfer')
+                            Transfer Bank
+                            @break
+                        @case('cash')
+                            Tunai
+                            @break
+                        @case('qris')
+                            QRIS
+                            @break
+                        @default
+                            {{ ucfirst($order->transaction->payment_method) }}
+                    @endswitch
+                </strong>
+            </div>
+            <div class="mb-3">
+                <small class="text-light d-block">Status Transaksi</small>
+                @php
+                    $transactionColors = [
+                        'pending' => 'warning',
+                        'confirmed' => 'success',
+                        'rejected' => 'danger'
+                    ];
+                @endphp
+                <span class="badge bg-{{ $transactionColors[$order->transaction->status] ?? 'secondary' }}">
+                    {{ ucfirst($order->transaction->status) }}
+                </span>
+            </div>
+            @if($order->transaction->confirmed_at)
+                <div>
+                    <small class="text-light d-block">Dikonfirmasi</small>
+                    <strong>{{ \Carbon\Carbon::parse($order->transaction->confirmed_at)->format('d M Y, H:i') }}</strong>
+                </div>
+            @endif
+        </div>
+        @endif
+
+        <!-- Payment Summary -->
         <div class="data-card">
             <h4 class="mb-4">
                 <i class="bi bi-credit-card me-2"></i>Pembayaran
@@ -249,7 +392,7 @@
                 </span>
             </div>
 
-            @if($order->payment_status === 'unpaid')
+            @if($order->payment_status === 'unpaid' && $order->status !== 'cancelled')
                 <a href="{{ route('customer.orders.payment', $order->id) }}" class="btn btn-primary w-100 mb-2">
                     <i class="bi bi-credit-card me-2"></i>Bayar Sekarang
                 </a>
@@ -290,24 +433,40 @@
     }
 
     .timeline-dot {
-        width: 16px;
-        height: 16px;
-        background: rgba(99,102,241,0.2);
-        border: 3px solid #1a1f3a;
+        width: 40px;
+        height: 40px;
+        background: rgba(99,102,241,0.1);
+        border: 3px solid rgba(99,102,241,0.3);
         border-radius: 50%;
         margin: 0 auto 1rem;
         transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,0.3);
+        font-size: 1.2rem;
     }
 
     .timeline-item.active .timeline-dot {
         background: #6366f1;
+        border-color: #6366f1;
         box-shadow: 0 0 0 4px rgba(99,102,241,0.2);
-        width: 20px;
-        height: 20px;
+        color: white;
+    }
+
+    .timeline-item.cancelled .timeline-dot {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: white;
     }
 
     .timeline-item.active h6 {
         color: #6366f1;
+        font-weight: 700;
+    }
+
+    .timeline-item.cancelled h6 {
+        color: #dc3545;
         font-weight: 700;
     }
 
@@ -343,12 +502,12 @@
         .order-timeline::before {
             width: 2px;
             height: 100%;
-            left: 8px;
+            left: 20px;
             top: 0;
         }
 
         .timeline-item {
-            padding-left: 3rem;
+            padding-left: 4rem;
             text-align: left;
             margin-bottom: 2rem;
         }
