@@ -995,7 +995,7 @@
                 <a href="#faq" class="nav-link">FAQ</a>
             </div>
             <div class="nav-buttons">
-                <a href="#" class="nav-login">Login</a>
+                <a href="{{ route('login') }}" class="nav-login">Login</a>
                 <a href="#" class="nav-cta">Daftar Sekarang</a>
             </div>
         </div>
@@ -1072,7 +1072,7 @@
     <section class="benefits">
         <div class="section-container">
             <div class="section-header">
-                <span class="section-badge">KEUNGGULAN HIJAU</span>
+                <span class="section-badge">KEUNGGULAN HEJO LAUNDRY</span>
                 <h2>Mengapa Memilih Hejo Laundry?</h2>
                 <p>Komitmen kami untuk lingkungan yang lebih bersih dan masa depan yang lebih hijau</p>
             </div>
@@ -1115,14 +1115,14 @@
     <section class="how-it-works" id="cara-kerja">
         <div class="section-container">
             <div class="section-header">
-                <span class="section-badge">PROSES HIJAU</span>
+                <span class="section-badge">PROSES HEJO</span>
                 <h2>Cara Kerja Hejo Laundry</h2>
                 <p>4 langkah mudah untuk berkontribusi pada lingkungan yang lebih bersih</p>
             </div>
             <div class="steps-container">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <h3>Pesan & Pilih Hijau</h3>
+                    <h3>Pesan & Pilih Hejo Laundry</h3>
                     <p>Daftar dan pilih paket eco-friendly kami. Setiap pemesanan berkontribusi untuk lingkungan</p>
                 </div>
                 <div class="step-card">
@@ -1149,7 +1149,7 @@
         <div class="section-container">
             <div class="section-header">
                 <span class="section-badge">PAKET ECO-FRIENDLY</span>
-                <h2>Pilih Paket Hijau Anda</h2>
+                <h2>Pilih Paket Hejo Anda</h2>
                 <p>Berbagai pilihan layanan ramah lingkungan dengan harga terjangkau</p>
             </div>
             <div class="service-cards">
@@ -1261,8 +1261,8 @@
                     <div class="testimonial-header">
                         <div class="testimonial-avatar">👨</div>
                         <div class="testimonial-info">
-                            <h4>Andi Prakoso</h4>
-                            <div class="testimonial-role">Aktivis Lingkungan</div>
+                            <h4>Andri Hakim</h4>
+                            <div class="testimonial-role">Invesestor Saham</div>
                         </div>
                     </div>
                     <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
@@ -1272,7 +1272,7 @@
                     <div class="testimonial-header">
                         <div class="testimonial-avatar">👩</div>
                         <div class="testimonial-info">
-                            <h4>Maya Anggraini</h4>
+                            <h4>Moniqca Sandha</h4>
                             <div class="testimonial-role">Ibu Rumah Tangga</div>
                         </div>
                     </div>
@@ -1283,7 +1283,7 @@
                     <div class="testimonial-header">
                         <div class="testimonial-avatar">👨</div>
                         <div class="testimonial-info">
-                            <h4>Rizki Maulana</h4>
+                            <h4>Abdullah F</h4>
                             <div class="testimonial-role">Mahasiswa</div>
                         </div>
                     </div>
@@ -1294,7 +1294,7 @@
                     <div class="testimonial-header">
                         <div class="testimonial-avatar">👩</div>
                         <div class="testimonial-info">
-                            <h4>Sari Wulandari</h4>
+                            <h4>Mila Apriani</h4>
                             <div class="testimonial-role">Dokter</div>
                         </div>
                     </div>
@@ -1305,7 +1305,7 @@
                     <div class="testimonial-header">
                         <div class="testimonial-avatar">👨</div>
                         <div class="testimonial-info">
-                            <h4>Budi Setiawan</h4>
+                            <h4>Budi Doremi</h4>
                             <div class="testimonial-role">Pengusaha</div>
                         </div>
                     </div>
@@ -1316,7 +1316,7 @@
                     <div class="testimonial-header">
                         <div class="testimonial-avatar">👩</div>
                         <div class="testimonial-info">
-                            <h4>Dina Puspita</h4>
+                            <h4>Nazwa Pradipta</h4>
                             <div class="testimonial-role">Content Creator</div>
                         </div>
                     </div>

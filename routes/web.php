@@ -106,25 +106,74 @@ Route::middleware(['auth'])->group(function () {
     // TRANSACTION ROUTES - ROLE: ADMINISTRATOR & KARYAWAN
     // ========================================================================
     
-    Route::middleware(['role:administrator,karyawan'])->group(function () {
-        // Transaction Statistics (harus di atas resource route)
-        Route::get('/transaction/statistics', [TransactionController::class, 'statistics'])->name('transaction.statistics');
+    Route::middleware(['role:administrator,karyawan'])->prefix('transaction')->name('transaction.')->group(function () {
+        // ============================================================
+        // ROUTES KHUSUS (Harus di atas route parameter {transaction})
+        // ============================================================
         
-        // Transaction Pending (harus di atas resource route)
-        Route::get('/transaction/pending', [TransactionController::class, 'pending'])->name('transaction.pending');
+        // Transaction Statistics
+        Route::get('/statistics', [TransactionController::class, 'statistics'])->name('statistics');
+        
+        // Transaction Pending List
+        Route::get('/pending', [TransactionController::class, 'pending'])->name('pending');
         
         // Transaction by Order
-        Route::get('/transaction/order/{order}', [TransactionController::class, 'byOrder'])->name('transaction.byOrder');
+        Route::get('/order/{order}', [TransactionController::class, 'byOrder'])->name('byOrder');
         
         // Transaction Create with Order ID
-        Route::get('/transaction/create/{orderId}', [TransactionController::class, 'create'])->name('transaction.create');
+        Route::get('/create/{orderId}', [TransactionController::class, 'create'])->name('create');
         
-        // Transaction Confirm & Reject
-        Route::patch('/transaction/{transaction}/confirm', [TransactionController::class, 'confirm'])->name('transaction.confirm');
-        Route::patch('/transaction/{transaction}/reject', [TransactionController::class, 'reject'])->name('transaction.reject');
+        // ============================================================
+        // MAIN TRANSACTION ROUTES
+        // ============================================================
         
-        // Transaction Resource Routes (CRUD)
-        Route::resource('transaction', TransactionController::class)->except(['create']);
+        // Transaction Index (List All)
+        Route::get('/', [TransactionController::class, 'index'])->name('index');
+        
+        // Transaction Store (Create New)
+        Route::post('/', [TransactionController::class, 'store'])->name('store');
+        
+        // Transaction Show (Detail)
+        Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
+        
+        // Transaction Edit Form
+        Route::get('/{transaction}/edit', [TransactionController::class, 'edit'])->name('edit');
+        
+        // Transaction Update
+        Route::put('/{transaction}', [TransactionController::class, 'update'])->name('update');
+        
+        // Transaction Delete
+        Route::delete('/{transaction}', [TransactionController::class, 'destroy'])->name('destroy');
+        
+        // ============================================================
+        // PAYMENT STATUS MANAGEMENT ROUTES
+        // ============================================================
+        
+        // Update Payment Status & Method
+        Route::post('/{transaction}/update-status', [TransactionController::class, 'updatePaymentStatus'])->name('update-status');
+        
+        // Quick Confirm Payment
+        Route::post('/{transaction}/quick-confirm', [TransactionController::class, 'quickConfirm'])->name('quick-confirm');
+        
+        // Quick Reject Payment
+        Route::post('/{transaction}/quick-reject', [TransactionController::class, 'quickReject'])->name('quick-reject');
+        
+        // ============================================================
+        // 🆕 ORDER STATUS MANAGEMENT ROUTE (NEW)
+        // ============================================================
+        
+        // Update Order Status dari Transaction Page
+        Route::post('/{transaction}/update-order-status', [TransactionController::class, 'updateOrderStatus'])->name('update-order-status');
+        
+        // ============================================================
+        // LEGACY ROUTES (Masih bisa dipakai untuk kompatibilitas)
+        // ============================================================
+        
+        // Transaction Confirm (Legacy)
+        Route::patch('/{transaction}/confirm', [TransactionController::class, 'confirm'])->name('confirm');
+        
+        // Transaction Reject (Legacy)
+        Route::patch('/{transaction}/reject', [TransactionController::class, 'reject'])->name('reject');
     });
 
     // ========================================================================
@@ -132,20 +181,53 @@ Route::middleware(['auth'])->group(function () {
     // ========================================================================
     
     Route::middleware(['role:customer'])->prefix('customer')->name('customer.')->group(function () {
+        // Customer Dashboard
         Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
         
-        // Order Management
-        Route::prefix('orders')->name('orders.')->group(function () {
-            Route::get('/', [CustomerController::class, 'myOrders'])->name('index');
-            Route::get('/create', [CustomerController::class, 'createOrder'])->name('create');
-            Route::post('/', [OrderController::class, 'store'])->name('store');
-            Route::get('/{order}', [OrderController::class, 'show'])->name('show');
-            Route::get('/{order}/edit', [OrderController::class, 'edit'])->name('edit');
-            Route::put('/{order}', [OrderController::class, 'update'])->name('update');
-            Route::delete('/{order}', [OrderController::class, 'destroy'])->name('destroy');
-        });
-        
+        // Customer Notifications
         Route::get('/notifications', [CustomerController::class, 'notifications'])->name('notifications');
+        
+        // ====================================================================
+        // ORDER MANAGEMENT ROUTES
+        // ====================================================================
+        
+        Route::prefix('orders')->name('orders.')->group(function () {
+            // Order Index (List All Orders)
+            Route::get('/', [OrderController::class, 'index'])->name('index');
+            
+            // Order Create Form
+            Route::get('/create', [OrderController::class, 'create'])->name('create');
+            
+            // Order Store (Create New Order)
+            Route::post('/', [OrderController::class, 'store'])->name('store');
+            
+            // ================================================================
+            // ROUTES KHUSUS (Harus di atas route parameter {order})
+            // ================================================================
+            
+            // Payment Page (Halaman Pembayaran)
+            // Harus di atas /{order} agar tidak dianggap sebagai parameter
+            Route::get('/{order}/payment', [OrderController::class, 'payment'])->name('payment');
+            
+            // ================================================================
+            // ORDER DETAIL & MANAGEMENT
+            // ================================================================
+            
+            // Order Show (Detail Order)
+            Route::get('/{order}', [OrderController::class, 'show'])->name('show');
+            
+            // Order Edit Form
+            Route::get('/{order}/edit', [OrderController::class, 'edit'])->name('edit');
+            
+            // Order Update
+            Route::put('/{order}', [OrderController::class, 'update'])->name('update');
+            
+            // Order Delete
+            Route::delete('/{order}', [OrderController::class, 'destroy'])->name('destroy');
+            
+            // Order Cancel (Customer Cancel Order)
+            Route::patch('/{order}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+        });
     });
 });
 

@@ -29,10 +29,15 @@
                                 <label class="form-label text-light">Layanan</label>
                                 <select name="items[0][service_id]" class="form-select form-select-dark service-select" onchange="calculateTotal()" required>
                                     <option value="">-- Pilih Layanan --</option>
+                                    @foreach($services as $service)
+                                        <option value="{{ $service->id }}" data-price="{{ $service->price }}">
+                                            {{ $service->name }} - Rp {{ number_format($service->price, 0, ',', '.') }}/{{ $service->unit }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label text-light">Jumlah (kg)</label>
+                                <label class="form-label text-light">Jumlah ({{ $services->first()->unit ?? 'kg' }})</label>
                                 <input type="number" step="0.5" name="items[0][quantity]" 
                                        class="form-control form-control-dark quantity-input" 
                                        onchange="calculateTotal()" min="0.5" value="1" required
@@ -40,7 +45,7 @@
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
                                 <button type="button" onclick="removeService(this)" 
-                                        class="btn btn-outline-danger w-100" style="display: none;">
+                                        class="btn btn-outline-danger w-100 remove-btn" style="display: none;">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
@@ -72,7 +77,8 @@
                         <label for="pickup_date" class="form-label">Tanggal Pengambilan</label>
                         <input type="date" id="pickup_date" name="pickup_date" required
                                class="form-control form-control-dark"
-                               min="{{ now()->format('Y-m-d') }}"
+                               min="{{ date('Y-m-d') }}"
+                               value="{{ old('pickup_date') }}"
                                style="color: #fff;">
                         @error('pickup_date')
                             <div class="text-danger small mt-2">{{ $message }}</div>
@@ -82,7 +88,9 @@
                         <label for="pickup_time" class="form-label">Waktu Pengambilan (Opsional)</label>
                         <input type="time" id="pickup_time" name="pickup_time" 
                                class="form-control form-control-dark"
+                               value="{{ old('pickup_time') }}"
                                style="color: #fff;">
+                        <small class="text-muted d-block mt-1">Jam operasional: 08:00 - 20:00</small>
                     </div>
                 </div>
             </div>
@@ -96,9 +104,9 @@
                 <textarea id="notes" name="notes" rows="5"
                           class="form-control form-control-dark"
                           placeholder="Tuliskan catatan khusus, permintaan khusus, atau instruksi lainnya..."
-                          style="color: #fff;"></textarea>
+                          style="color: #fff;">{{ old('notes') }}</textarea>
                 <small class="text-muted d-block mt-2">
-                    Contoh: Jangan gunakan pemutih, cuci dengan air dingin, dsb.
+                    Contoh: Jangan gunakan pemutih, cuci dengan air dingin, pisahkan pakaian putih, dsb.
                 </small>
             </div>
         </div>
@@ -130,7 +138,7 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <span class="text-light">Biaya Admin:</span>
-                            <span class="admin-fee fw-bold" style="color: #86c7ff;">Rp 0</span>
+                            <span class="admin-fee fw-bold" style="color: #86c7ff;">Rp 5.000</span>
                         </div>
                         <hr style="border-color: rgba(255,255,255,0.1);">
                     </div>
@@ -138,7 +146,7 @@
                     <div class="mb-4 p-3" style="background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(59,130,246,0.1) 100%); border-radius: 0.5rem; border: 1px solid rgba(99,102,241,0.2);">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted">Total Pembayaran:</span>
-                            <span class="total-amount" style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">Rp 0</span>
+                            <span class="total-amount" style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">Rp 5.000</span>
                         </div>
                     </div>
 
@@ -268,13 +276,16 @@
 </style>
 
 <script>
-let services = [];
+const ADMIN_FEE = 5000;
 let serviceCount = 1;
-const ADMIN_FEE = 5000; // Sesuaikan dengan kebijakan bisnis Anda
+
+// Data services dari server (sudah ada di DOM)
+const servicesData = @json($services);
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadServices();
     setMinDate();
+    calculateTotal();
+    updateRemoveButtons();
 });
 
 function setMinDate() {
@@ -282,39 +293,16 @@ function setMinDate() {
     document.getElementById('pickup_date').setAttribute('min', today);
 }
 
-function loadServices() {
-    fetch('/api/services')
-        .then(response => response.json())
-        .then(data => {
-            services = data;
-            populateServiceSelects();
-            calculateTotal();
-        })
-        .catch(error => {
-            console.error('Error loading services:', error);
-        });
-}
-
-function populateServiceSelects() {
-    const serviceOptions = services.map(s => 
-        `<option value="${s.id}" data-price="${s.price}">${s.name} - Rp ${parseInt(s.price).toLocaleString('id-ID')}/kg</option>`
-    ).join('');
-    
-    document.querySelectorAll('.service-select').forEach(select => {
-        select.innerHTML = '<option value="">-- Pilih Layanan --</option>' + serviceOptions;
-    });
-}
-
 function addService() {
     serviceCount++;
     const container = document.getElementById('services-container');
     
-    const serviceOptions = services.map(s => 
-        `<option value="${s.id}" data-price="${s.price}">${s.name} - Rp ${parseInt(s.price).toLocaleString('id-ID')}/kg</option>`
+    const serviceOptions = servicesData.map(s => 
+        `<option value="${s.id}" data-price="${s.price}">${s.name} - Rp ${parseInt(s.price).toLocaleString('id-ID')}/${s.unit}</option>`
     ).join('');
     
     const html = `
-                            <div class="service-item" data-index="${serviceCount}">
+        <div class="service-item" data-index="${serviceCount}">
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label text-light">Layanan</label>
@@ -331,7 +319,7 @@ function addService() {
                            style="color: #fff;">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="button" onclick="removeService(this)" class="btn btn-outline-danger w-100">
+                    <button type="button" onclick="removeService(this)" class="btn btn-outline-danger w-100 remove-btn">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>
@@ -340,7 +328,7 @@ function addService() {
                 <div class="col-12">
                     <div class="d-flex justify-content-between p-3" style="background-color: rgba(99,102,241,0.05); border-radius: 0.5rem;">
                         <span class="text-muted">Subtotal:</span>
-                        <span class="service-subtotal fw-bold text-info">Rp 0</span>
+                        <span class="service-subtotal fw-bold" style="color: #86c7ff;">Rp 0</span>
                     </div>
                 </div>
             </div>
@@ -349,6 +337,7 @@ function addService() {
     
     container.insertAdjacentHTML('beforeend', html);
     calculateTotal();
+    updateRemoveButtons();
 }
 
 function removeService(btn) {
@@ -356,9 +345,23 @@ function removeService(btn) {
     if (items.length > 1) {
         btn.closest('.service-item').remove();
         calculateTotal();
+        updateRemoveButtons();
     } else {
         alert('Minimal harus ada 1 layanan');
     }
+}
+
+function updateRemoveButtons() {
+    const items = document.querySelectorAll('.service-item');
+    const removeButtons = document.querySelectorAll('.remove-btn');
+    
+    removeButtons.forEach((btn, index) => {
+        if (items.length > 1) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    });
 }
 
 function calculateTotal() {
@@ -371,7 +374,7 @@ function calculateTotal() {
         const qty = item.querySelector('.quantity-input');
         const subtotalEl = item.querySelector('.service-subtotal');
 
-        if (select.value && qty.value) {
+        if (select.value && qty.value && parseFloat(qty.value) > 0) {
             const price = parseFloat(select.options[select.selectedIndex].dataset.price);
             const quantity = parseFloat(qty.value);
             const subtotal = price * quantity;
@@ -389,7 +392,7 @@ function calculateTotal() {
     const finalTotal = total + ADMIN_FEE;
 
     // Update ringkasan
-    document.querySelector('.total-weight').textContent = totalWeight + ' kg';
+    document.querySelector('.total-weight').textContent = totalWeight.toFixed(1) + ' kg';
     document.querySelector('.total-items').textContent = totalItems;
     document.querySelector('.subtotal-amount').textContent = 'Rp ' + parseInt(total).toLocaleString('id-ID');
     document.querySelector('.admin-fee').textContent = 'Rp ' + parseInt(ADMIN_FEE).toLocaleString('id-ID');
@@ -398,25 +401,44 @@ function calculateTotal() {
 
 // Form validation
 document.getElementById('orderForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Validasi minimal satu layanan valid
     const items = document.querySelectorAll('.service-item');
     const hasValidItems = Array.from(items).some(item => {
         const select = item.querySelector('.service-select');
         const qty = item.querySelector('.quantity-input');
-        return select.value && qty.value;
+        return select.value && qty.value && parseFloat(qty.value) > 0;
     });
 
     if (!hasValidItems) {
         e.preventDefault();
-        alert('Pilih minimal satu layanan dengan jumlah');
+        alert('Pilih minimal satu layanan dengan jumlah yang valid!');
         return false;
     }
 
+    // Validasi tanggal
     const pickupDate = document.getElementById('pickup_date').value;
     if (!pickupDate) {
         e.preventDefault();
-        alert('Tanggal pengambilan harus diisi');
+        alert('Tanggal pengambilan harus diisi!');
         return false;
     }
+
+    // Validasi tanggal tidak boleh masa lalu
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDate = new Date(pickupDate);
+    
+    if (selectedDate < today) {
+        e.preventDefault();
+        alert('Tanggal pengambilan tidak boleh di masa lalu!');
+        return false;
+    }
+
+    // Disable button untuk prevent double submit
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memproses...';
 });
 </script>
 @endsection

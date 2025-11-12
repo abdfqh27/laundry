@@ -243,8 +243,8 @@
                 border: 1px solid {{ Route::currentRouteName() === 'admin.settings' ? 'rgba(34, 197, 94, 0.3)' : 'transparent' }};
                 position: relative;
             " onmouseover="if('{{ Route::currentRouteName() }}' !== 'admin.settings') { this.style.color='#16a34a'; this.style.backgroundColor='rgba(34, 197, 94, 0.1)'; this.style.borderColor='rgba(34, 197, 94, 0.2)'; }" onmouseout="if('{{ Route::currentRouteName() }}' !== 'admin.settings') { this.style.color='rgba(255, 255, 255, 0.7)'; this.style.backgroundColor='transparent'; this.style.borderColor='transparent'; }">
-                <i class="bi bi-gear-fill" style="font-size: 1.15rem; width: 20px;"></i>
-                Setting
+                <i class="bi bi-file-earmark-text-fill" style="font-size: 1.15rem; width: 20px;"></i>
+                Report
                 @if(Route::currentRouteName() === 'admin.settings')
                     <div style="
                         position: absolute;
