@@ -228,8 +228,8 @@
                 @endif
             </a>
 
-            <a href="{{ route('admin.settings') }}" style="
-                color: {{ Route::currentRouteName() === 'admin.settings' ? '#16a34a' : 'rgba(255, 255, 255, 0.7)' }};
+            <a href="{{ route('report.index') }}" style="
+                color: {{ Route::currentRouteName() === 'report.index' ? '#16a34a' : 'rgba(255, 255, 255, 0.7)' }};
                 text-decoration: none;
                 padding: 0.875rem 1rem;
                 display: flex;
@@ -239,13 +239,13 @@
                 border-radius: 0.75rem;
                 font-size: 0.95rem;
                 font-weight: 500;
-                background-color: {{ Route::currentRouteName() === 'admin.settings' ? 'rgba(34, 197, 94, 0.15)' : 'transparent' }};
-                border: 1px solid {{ Route::currentRouteName() === 'admin.settings' ? 'rgba(34, 197, 94, 0.3)' : 'transparent' }};
+                background-color: {{ Route::currentRouteName() === 'report.index' ? 'rgba(34, 197, 94, 0.15)' : 'transparent' }};
+                border: 1px solid {{ Route::currentRouteName() === 'report.index' ? 'rgba(34, 197, 94, 0.3)' : 'transparent' }};
                 position: relative;
-            " onmouseover="if('{{ Route::currentRouteName() }}' !== 'admin.settings') { this.style.color='#16a34a'; this.style.backgroundColor='rgba(34, 197, 94, 0.1)'; this.style.borderColor='rgba(34, 197, 94, 0.2)'; }" onmouseout="if('{{ Route::currentRouteName() }}' !== 'admin.settings') { this.style.color='rgba(255, 255, 255, 0.7)'; this.style.backgroundColor='transparent'; this.style.borderColor='transparent'; }">
+            " onmouseover="if('{{ Route::currentRouteName() }}' !== 'report.index') { this.style.color='#16a34a'; this.style.backgroundColor='rgba(34, 197, 94, 0.1)'; this.style.borderColor='rgba(34, 197, 94, 0.2)'; }" onmouseout="if('{{ Route::currentRouteName() }}' !== 'report.index') { this.style.color='rgba(255, 255, 255, 0.7)'; this.style.backgroundColor='transparent'; this.style.borderColor='transparent'; }">
                 <i class="bi bi-file-earmark-text-fill" style="font-size: 1.15rem; width: 20px;"></i>
                 Report
-                @if(Route::currentRouteName() === 'admin.settings')
+                @if(Route::currentRouteName() === 'report.index')
                     <div style="
                         position: absolute;
                         right: 0.75rem;

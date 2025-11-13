@@ -10,6 +10,7 @@ use App\Http\Controllers\Karyawan\KaryawanController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -159,7 +160,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{transaction}/quick-reject', [TransactionController::class, 'quickReject'])->name('quick-reject');
         
         // ============================================================
-        // 🆕 ORDER STATUS MANAGEMENT ROUTE (NEW)
+        // ORDER STATUS MANAGEMENT ROUTE
         // ============================================================
         
         // Update Order Status dari Transaction Page
@@ -174,6 +175,76 @@ Route::middleware(['auth'])->group(function () {
         
         // Transaction Reject (Legacy)
         Route::patch('/{transaction}/reject', [TransactionController::class, 'reject'])->name('reject');
+    });
+
+    // ========================================================================
+    // REPORT ROUTES - ROLE: ADMINISTRATOR & KARYAWAN
+    // ========================================================================
+    
+    Route::middleware(['role:administrator,karyawan'])->prefix('report')->name('report.')->group(function () {
+        
+        // ============================================================
+        // REPORT DASHBOARD
+        // ============================================================
+        
+        // Report Index / Dashboard
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        
+        // ============================================================
+        // TRANSACTIONS REPORT
+        // ============================================================
+        
+        // View Transactions Report
+        Route::get('/transactions', [ReportController::class, 'transactions'])->name('transactions');
+        
+        // Export Transactions to PDF
+        Route::get('/transactions/pdf', [ReportController::class, 'exportTransactionsPdf'])->name('transactions.pdf');
+        
+        // Export Transactions to Excel
+        Route::get('/transactions/excel', [ReportController::class, 'exportTransactionsExcel'])->name('transactions.excel');
+        
+        // ============================================================
+        // ORDERS REPORT
+        // ============================================================
+        
+        // View Orders Report
+        Route::get('/orders', [ReportController::class, 'orders'])->name('orders');
+        
+        // Export Orders to PDF
+        Route::get('/orders/pdf', [ReportController::class, 'exportOrdersPdf'])->name('orders.pdf');
+        
+        // Export Orders to Excel
+        Route::get('/orders/excel', [ReportController::class, 'exportOrdersExcel'])->name('orders.excel');
+        
+        // ============================================================
+        // REVENUE REPORT
+        // ============================================================
+        
+        // View Revenue Report
+        Route::get('/revenue', [ReportController::class, 'revenue'])->name('revenue');
+        
+        // Export Revenue to PDF
+        Route::get('/revenue/pdf', [ReportController::class, 'exportRevenuePdf'])->name('revenue.pdf');
+        
+        // Export Revenue to Excel
+        Route::get('/revenue/excel', [ReportController::class, 'exportRevenueExcel'])->name('revenue.excel');
+        
+        // ============================================================
+        // CUSTOMERS REPORT
+        // ============================================================
+        
+        // View Customers Report
+        Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
+        
+        // Export Customers to Excel
+        Route::get('/customers/excel', [ReportController::class, 'exportCustomersExcel'])->name('customers.excel');
+        
+        // ============================================================
+        // SERVICES REPORT
+        // ============================================================
+        
+        // View Services Report
+        Route::get('/services', [ReportController::class, 'services'])->name('services');
     });
 
     // ========================================================================
