@@ -306,93 +306,109 @@ class ReportController extends Controller
      * Export Orders to PDF
      */
     public function exportOrdersPdf(Request $request)
-    {
-        $query = Order::with(['customer', 'karyawan', 'items.service', 'transaction']);
+{
+    $query = Order::with(['customer', 'karyawan', 'items.service', 'transaction']);
 
-        // Apply filters
-        if ($request->filled('start_date')) {
-            $query->whereDate('created_at', '>=', $request->start_date);
-        }
-        if ($request->filled('end_date')) {
-            $query->whereDate('created_at', '<=', $request->end_date);
-        }
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('payment_status')) {
-            $query->where('payment_status', $request->payment_status);
-        }
-
-        $orders = $query->latest()->get();
-
-        $summary = [
-            'total_count' => $orders->count(),
-            'total_revenue' => $orders->where('payment_status', 'paid')->sum('total_amount'),
-            'completed_orders' => $orders->where('status', 'completed')->count(),
-            'pending_orders' => $orders->where('status', 'pending')->count(),
-        ];
-
-        $pdf = Pdf::loadView('report.pdf.orders', [
-            'orders' => $orders,
-            'summary' => $summary,
-            'filters' => $request->all(),
-        ]);
-
-        $filename = 'laporan-orders-' . date('Y-m-d-His') . '.pdf';
-        
-        return $pdf->download($filename);
+    // Apply filters
+    if ($request->filled('start_date')) {
+        $query->whereDate('created_at', '>=', $request->start_date);
     }
+    if ($request->filled('end_date')) {
+        $query->whereDate('created_at', '<=', $request->end_date);
+    }
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+    if ($request->filled('payment_status')) {
+        $query->where('payment_status', $request->payment_status);
+    }
+
+    $orders = $query->latest()->get();
+
+    $summary = [
+        'total_count' => $orders->count(),
+        'total_revenue' => $orders->where('payment_status', 'paid')->sum('total_amount'),
+        'pending_orders' => $orders->where('status', 'pending')->count(),
+        'processing_orders' => $orders->where('status', 'processing')->count(), // TAMBAHKAN INI
+        'completed_orders' => $orders->where('status', 'completed')->count(),
+        'picked_up_orders' => $orders->where('status', 'picked_up')->count(), // TAMBAHKAN INI
+        'cancelled_orders' => $orders->where('status', 'cancelled')->count(), // TAMBAHKAN INI
+        'unpaid_count' => $orders->where('payment_status', 'unpaid')->count(), // TAMBAHKAN INI
+        'paid_count' => $orders->where('payment_status', 'paid')->count(), // TAMBAHKAN INI
+    ];
+
+    $pdf = Pdf::loadView('report.pdf.orders', [
+        'orders' => $orders,
+        'summary' => $summary,
+        'filters' => $request->all(),
+    ]);
+
+    $filename = 'laporan-orders-' . date('Y-m-d-His') . '.pdf';
+    
+    return $pdf->download($filename);
+}
 
     /**
      * Export Revenue to PDF
      */
-    public function exportRevenuePdf(Request $request)
-    {
-        $startDate = $request->filled('start_date') 
-            ? Carbon::parse($request->start_date) 
-            : Carbon::now()->startOfMonth();
-        
-        $endDate = $request->filled('end_date') 
-            ? Carbon::parse($request->end_date) 
-            : Carbon::now()->endOfMonth();
+    /**
+ * Export Revenue to PDF
+ */
+public function exportRevenuePdf(Request $request)
+{
+    $startDate = $request->filled('start_date') 
+        ? Carbon::parse($request->start_date) 
+        : Carbon::now()->startOfMonth();
+    
+    $endDate = $request->filled('end_date') 
+        ? Carbon::parse($request->end_date) 
+        : Carbon::now()->endOfMonth();
 
-        $transactions = Transaction::with(['order.customer'])
-            ->where('status', 'confirmed')
-            ->whereDate('confirmed_at', '>=', $startDate)
-            ->whereDate('confirmed_at', '<=', $endDate)
-            ->get();
+    $transactions = Transaction::with(['order.customer'])
+        ->where('status', 'confirmed')
+        ->whereDate('confirmed_at', '>=', $startDate)
+        ->whereDate('confirmed_at', '<=', $endDate)
+        ->get();
 
-        $dailyRevenue = $transactions->groupBy(function($item) {
-            return Carbon::parse($item->confirmed_at)->format('Y-m-d');
-        })->map(function($dayTransactions) {
-            return [
-                'total' => $dayTransactions->sum('amount'),
-                'count' => $dayTransactions->count(),
-                'cash' => $dayTransactions->where('payment_method', 'cash')->sum('amount'),
-                'transfer' => $dayTransactions->where('payment_method', 'transfer')->sum('amount'),
-                'qris' => $dayTransactions->where('payment_method', 'qris')->sum('amount'),
-            ];
-        });
-
-        $summary = [
-            'total_revenue' => $transactions->sum('amount'),
-            'total_transactions' => $transactions->count(),
-            'average_transaction' => $transactions->count() > 0 
-                ? $transactions->sum('amount') / $transactions->count() 
-                : 0,
+    $dailyRevenue = $transactions->groupBy(function($item) {
+        return Carbon::parse($item->confirmed_at)->format('Y-m-d');
+    })->map(function($dayTransactions) {
+        return [
+            'total' => $dayTransactions->sum('amount'),
+            'count' => $dayTransactions->count(),
+            'cash' => $dayTransactions->where('payment_method', 'cash')->sum('amount'),
+            'transfer' => $dayTransactions->where('payment_method', 'transfer')->sum('amount'),
+            'qris' => $dayTransactions->where('payment_method', 'qris')->sum('amount'),
         ];
+    });
 
-        $pdf = Pdf::loadView('report.pdf.revenue', [
-            'dailyRevenue' => $dailyRevenue,
-            'summary' => $summary,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-        ]);
+    // TAMBAHKAN INI - Breakdown by payment method
+    $byPaymentMethod = [
+        'cash' => $transactions->where('payment_method', 'cash')->sum('amount'),
+        'transfer' => $transactions->where('payment_method', 'transfer')->sum('amount'),
+        'qris' => $transactions->where('payment_method', 'qris')->sum('amount'),
+    ];
 
-        $filename = 'laporan-pendapatan-' . date('Y-m-d-His') . '.pdf';
-        
-        return $pdf->download($filename);
-    }
+    $summary = [
+        'total_revenue' => $transactions->sum('amount'),
+        'total_transactions' => $transactions->count(),
+        'average_transaction' => $transactions->count() > 0 
+            ? $transactions->sum('amount') / $transactions->count() 
+            : 0,
+        'by_payment_method' => $byPaymentMethod, // TAMBAHKAN INI
+    ];
+
+    $pdf = Pdf::loadView('report.pdf.revenue', [
+        'dailyRevenue' => $dailyRevenue,
+        'summary' => $summary,
+        'startDate' => $startDate,
+        'endDate' => $endDate,
+    ]);
+
+    $filename = 'laporan-pendapatan-' . date('Y-m-d-His') . '.pdf';
+    
+    return $pdf->download($filename);
+}
 
     // ==================== EXPORT EXCEL ====================
 
