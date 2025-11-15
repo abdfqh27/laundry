@@ -1,391 +1,323 @@
 @extends('layouts.app')
 
-@section('title', 'Laporan & Statistik')
+@section('title', 'Dashboard Laporan')
 
 @section('content')
-<div class="container-fluid py-4">
-    <!-- Header with Animation -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-lg header-card">
-                <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col-lg-8">
-                            <div class="d-flex align-items-center">
-                                <div class="icon-wrapper-large me-3">
-                                    <i class="bi bi-graph-up-arrow"></i>
-                                    <div class="icon-pulse"></div>
-                                </div>
-                                <div>
-                                    <h2 class="mb-1 text-white fw-bold display-6">Laporan & Statistik</h2>
-                                    <p class="text-white-50 mb-0">Dashboard analisis bisnis laundry real-time</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                            <div class="date-badge">
-                                <i class="bi bi-calendar3 me-2"></i>
-                                {{ now()->format('d F Y') }}
-                            </div>
-                            <div class="status-indicator mt-2">
-                                <span class="pulse-dot"></span>
-                                <small class="text-white-50">Data terupdate</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1><i class="bi bi-graph-up-arrow me-2"></i>Dashboard Laporan & Analitik</h1>
+            <p>Ringkasan lengkap statistik dan laporan bisnis Hejo Laundry</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline-light" onclick="location.reload()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Statistics Cards -->
+<div class="stat-card-grid">
+    <div class="stat-card green" data-aos="fade-up" data-aos-delay="0">
+        <div class="stat-card-content">
+            <div class="stat-card-info">
+                <h3>{{ number_format($stats['total_orders']) }}</h3>
+                <p>Total Orders</p>
+                <small class="stat-trend">
+                    <i class="bi bi-arrow-up-short"></i> 
+                    <span style="color: #22c55e;">+12.5%</span> dari bulan lalu
+                </small>
+            </div>
+            <div class="stat-card-icon">
+                <i class="bi bi-cart-check-fill"></i>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Cards with Hover Effects -->
-    <div class="row g-4 mb-4">
-        <!-- Total Orders -->
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card stat-card-blue">
-                <div class="stat-card-inner">
-                    <div class="stat-background">
-                        <i class="bi bi-receipt"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div class="stat-icon-modern">
-                                <i class="bi bi-receipt-cutoff"></i>
-                            </div>
-                            <span class="badge-modern badge-blue">All Time</span>
-                        </div>
-                        <p class="stat-label mb-2">Total Orders</p>
-                        <h2 class="stat-value mb-2">{{ number_format($stats['total_orders']) }}</h2>
-                        <div class="stat-info">
-                            <span class="trend-up">
-                                <i class="bi bi-arrow-up-right"></i>
-                                Terus meningkat
-                            </span>
-                        </div>
-                    </div>
-                    <div class="stat-overlay"></div>
-                </div>
+    <div class="stat-card blue" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card-content">
+            <div class="stat-card-info">
+                <h3>{{ number_format($stats['total_transactions']) }}</h3>
+                <p>Total Transaksi</p>
+                <small class="stat-trend">
+                    <i class="bi bi-arrow-up-short"></i> 
+                    <span style="color: #60a5fa;">+8.3%</span> dari bulan lalu
+                </small>
             </div>
-        </div>
-
-        <!-- Total Transactions -->
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card stat-card-cyan">
-                <div class="stat-card-inner">
-                    <div class="stat-background">
-                        <i class="bi bi-credit-card"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div class="stat-icon-modern">
-                                <i class="bi bi-credit-card-2-front"></i>
-                            </div>
-                            <span class="badge-modern badge-cyan">Active</span>
-                        </div>
-                        <p class="stat-label mb-2">Total Transaksi</p>
-                        <h2 class="stat-value mb-2">{{ number_format($stats['total_transactions']) }}</h2>
-                        <div class="stat-info">
-                            <span class="trend-up">
-                                <i class="bi bi-graph-up"></i>
-                                Aktif bertransaksi
-                            </span>
-                        </div>
-                    </div>
-                    <div class="stat-overlay"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Revenue -->
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card stat-card-green">
-                <div class="stat-card-inner">
-                    <div class="stat-background">
-                        <i class="bi bi-cash-stack"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div class="stat-icon-modern">
-                                <i class="bi bi-wallet2"></i>
-                            </div>
-                            <span class="badge-modern badge-green">Confirmed</span>
-                        </div>
-                        <p class="stat-label mb-2">Total Pendapatan</p>
-                        <h2 class="stat-value mb-2" style="font-size: 1.5rem;">Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}</h2>
-                        <div class="stat-info">
-                            <span class="trend-up">
-                                <i class="bi bi-graph-up-arrow"></i>
-                                Revenue terkonfirmasi
-                            </span>
-                        </div>
-                    </div>
-                    <div class="stat-overlay"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Completed Orders -->
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card stat-card-purple">
-                <div class="stat-card-inner">
-                    <div class="stat-background">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div class="stat-icon-modern">
-                                <i class="bi bi-check2-circle"></i>
-                            </div>
-                            <span class="badge-modern badge-purple">Done</span>
-                        </div>
-                        <p class="stat-label mb-2">Order Selesai</p>
-                        <h2 class="stat-value mb-2">{{ number_format($stats['completed_orders']) }}</h2>
-                        <div class="stat-info">
-                            <span class="trend-up">
-                                <i class="bi bi-check-circle-fill"></i>
-                                Sukses diselesaikan
-                            </span>
-                        </div>
-                    </div>
-                    <div class="stat-overlay"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Payments -->
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card stat-card-orange">
-                <div class="stat-card-inner">
-                    <div class="stat-background">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div class="stat-icon-modern">
-                                <i class="bi bi-exclamation-triangle"></i>
-                            </div>
-                            <span class="badge-modern badge-orange">Pending</span>
-                        </div>
-                        <p class="stat-label mb-2">Pembayaran Pending</p>
-                        <h2 class="stat-value mb-2">{{ number_format($stats['pending_payments']) }}</h2>
-                        <div class="stat-info">
-                            <span class="trend-warning">
-                                <i class="bi bi-clock-history"></i>
-                                Perlu tindak lanjut
-                            </span>
-                        </div>
-                    </div>
-                    <div class="stat-overlay"></div>
-                </div>
+            <div class="stat-card-icon">
+                <i class="bi bi-receipt"></i>
             </div>
         </div>
     </div>
 
-    <!-- Report Section Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="section-header">
-                <div class="section-header-icon">
-                    <i class="bi bi-file-earmark-text"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0 text-dark fw-bold">Menu Laporan</h4>
-                    <p class="text-muted small mb-0">Akses berbagai laporan bisnis</p>
-                </div>
+    <div class="stat-card purple" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card-content">
+            <div class="stat-card-info">
+                <h3>Rp {{ number_format((float)$stats['total_revenue'], 0, ',', '.') }}</h3>
+                <p>Total Pendapatan</p>
+                <small class="stat-trend">
+                    <i class="bi bi-arrow-up-short"></i> 
+                    <span style="color: #c084fc;">+15.7%</span> dari bulan lalu
+                </small>
             </div>
-            
-        </div>
-    </div>
-
-    <!-- Report Cards with Modern Design -->
-    <div class="row g-4 mb-4">
-        <!-- Laporan Transaksi -->
-        <div class="col-xl-4 col-md-6">
-            <div class="report-card-modern report-blue">
-                <div class="report-card-glow"></div>
-                <div class="report-card-content">
-                    <div class="report-icon-circle">
-                        <i class="bi bi-credit-card-2-front"></i>
-                    </div>
-                    <h5 class="report-title">Laporan Transaksi</h5>
-                    <p class="report-description">
-                        Detail transaksi pembayaran dengan filter lengkap berdasarkan periode dan status
-                    </p>
-                    <div class="report-actions">
-                        <a href="{{ route('report.transactions') }}" class="btn btn-report btn-primary">
-                            <i class="bi bi-eye me-2"></i> Lihat Laporan
-                        </a>
-                        <div class="btn-group mt-2 w-100">
-                            <a href="{{ route('report.transactions.pdf') }}" class="btn btn-export btn-pdf">
-                                <i class="bi bi-file-pdf"></i> PDF
-                            </a>
-                            <a href="{{ route('report.transactions.excel') }}" class="btn btn-export btn-excel">
-                                <i class="bi bi-file-excel"></i> Excel
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Laporan Orders -->
-        <div class="col-xl-4 col-md-6">
-            <div class="report-card-modern report-cyan">
-                <div class="report-card-glow"></div>
-                <div class="report-card-content">
-                    <div class="report-icon-circle">
-                        <i class="bi bi-receipt-cutoff"></i>
-                    </div>
-                    <h5 class="report-title">Laporan Orders</h5>
-                    <p class="report-description">
-                        Tracking semua order laundry, status real-time, dan detail pelanggan
-                    </p>
-                    <div class="report-actions">
-                        <a href="{{ route('report.orders') }}" class="btn btn-report btn-info">
-                            <i class="bi bi-eye me-2"></i> Lihat Laporan
-                        </a>
-                        <div class="btn-group mt-2 w-100">
-                            <a href="{{ route('report.orders.pdf') }}" class="btn btn-export btn-pdf">
-                                <i class="bi bi-file-pdf"></i> PDF
-                            </a>
-                            <a href="{{ route('report.orders.excel') }}" class="btn btn-export btn-excel">
-                                <i class="bi bi-file-excel"></i> Excel
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Laporan Pendapatan -->
-        <div class="col-xl-4 col-md-6">
-            <div class="report-card-modern report-green">
-                <div class="report-card-glow"></div>
-                <div class="report-card-content">
-                    <div class="report-icon-circle">
-                        <i class="bi bi-graph-up-arrow"></i>
-                    </div>
-                    <h5 class="report-title">Laporan Pendapatan</h5>
-                    <p class="report-description">
-                        Analisis pendapatan lengkap dengan breakdown metode pembayaran
-                    </p>
-                    <div class="report-actions">
-                        <a href="{{ route('report.revenue') }}" class="btn btn-report btn-success">
-                            <i class="bi bi-eye me-2"></i> Lihat Laporan
-                        </a>
-                        <div class="btn-group mt-2 w-100">
-                            <a href="{{ route('report.revenue.pdf') }}" class="btn btn-export btn-pdf">
-                                <i class="bi bi-file-pdf"></i> PDF
-                            </a>
-                            <a href="{{ route('report.revenue.excel') }}" class="btn btn-export btn-excel">
-                                <i class="bi bi-file-excel"></i> Excel
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Laporan Pelanggan -->
-        <div class="col-xl-4 col-md-6">
-            <div class="report-card-modern report-orange">
-                <div class="report-card-glow"></div>
-                <div class="report-card-content">
-                    <div class="report-icon-circle">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <h5 class="report-title">Laporan Pelanggan</h5>
-                    <p class="report-description">
-                        Database pelanggan lengkap dengan statistik order dan spending
-                    </p>
-                    <div class="report-actions">
-                        <a href="{{ route('report.customers') }}" class="btn btn-report btn-warning">
-                            <i class="bi bi-eye me-2"></i> Lihat Laporan
-                        </a>
-                        <div class="btn-group mt-2 w-100">
-                            <a href="{{ route('report.customers.excel') }}" class="btn btn-export btn-excel w-100">
-                                <i class="bi bi-file-excel"></i> Export Excel
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Laporan Layanan -->
-        <div class="col-xl-4 col-md-6">
-            <div class="report-card-modern report-purple">
-                <div class="report-card-glow"></div>
-                <div class="report-card-content">
-                    <div class="report-icon-circle">
-                        <i class="bi bi-tags-fill"></i>
-                    </div>
-                    <h5 class="report-title">Laporan Layanan</h5>
-                    <p class="report-description">
-                        Analisis layanan terpopuler dan performa revenue per layanan
-                    </p>
-                    <div class="report-actions">
-                        <a href="{{ route('report.services') }}" class="btn btn-report btn-purple">
-                            <i class="bi bi-eye me-2"></i> Lihat Laporan
-                        </a>
-                    </div>
-                </div>
+            <div class="stat-card-icon">
+                <i class="bi bi-cash-stack"></i>
             </div>
         </div>
     </div>
 
-    <!-- Quick Actions with Animation -->
-    <div class="row">
-        <div class="col-12">
-            <div class="quick-actions-modern">
-                <div class="quick-actions-header">
-                    <div class="d-flex align-items-center">
-                        <div class="quick-icon">
-                            <i class="bi bi-lightning-charge-fill"></i>
-                        </div>
+    <div class="stat-card orange" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-card-content">
+            <div class="stat-card-info">
+                <h3>{{ number_format($stats['pending_payments']) }}</h3>
+                <p>Pembayaran Pending</p>
+                <small class="stat-trend">
+                    <i class="bi bi-clock-history"></i> 
+                    <span style="color: #fb923c;">Butuh perhatian</span>
+                </small>
+            </div>
+            <div class="stat-card-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Analytics Row -->
+<div class="row g-4 mb-4">
+    <!-- Order Status Breakdown -->
+    <div class="col-lg-6">
+        <div class="data-card" data-aos="fade-right">
+            <div class="card-header-custom">
+                <h4><i class="bi bi-pie-chart-fill"></i> Status Pesanan</h4>
+                <span class="badge badge-success">Real-time</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="orderStatusChart"></canvas>
+            </div>
+            <div class="mt-4">
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-indicator" style="background: #22c55e;"></div>
                         <div>
-                            <h5 class="mb-0 fw-bold">Quick Actions</h5>
-                            <p class="text-muted small mb-0">Akses cepat ke laporan favorit</p>
+                            <strong style="color: #22c55e;">{{ $stats['completed_orders'] }}</strong>
+                            <small style="color: rgba(255,255,255,0.6); display: block;">Selesai</small>
                         </div>
+                        <small style="color: rgba(255,255,255,0.5);">
+                            {{ $stats['total_orders'] > 0 ? round(($stats['completed_orders'] / $stats['total_orders']) * 100, 1) : 0 }}%
+                        </small>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator" style="background: #fb923c;"></div>
+                        <div>
+                            <strong style="color: #fb923c;">{{ $stats['pending_payments'] }}</strong>
+                            <small style="color: rgba(255,255,255,0.6); display: block;">Pending</small>
+                        </div>
+                        <small style="color: rgba(255,255,255,0.5);">
+                            {{ $stats['total_orders'] > 0 ? round(($stats['pending_payments'] / $stats['total_orders']) * 100, 1) : 0 }}%
+                        </small>
                     </div>
                 </div>
-                <div class="quick-actions-body">
-                    <div class="row g-3">
-                        <div class="col-lg col-md-6">
-                            <a href="{{ route('report.transactions', ['start_date' => now()->startOfMonth()->format('Y-m-d'), 'end_date' => now()->format('Y-m-d')]) }}" 
-                               class="quick-btn quick-btn-blue">
-                                <i class="bi bi-calendar-range"></i>
-                                <span>Transaksi Bulan Ini</span>
-                            </a>
-                        </div>
-                        <div class="col-lg col-md-6">
-                            <a href="{{ route('report.orders', ['status' => 'completed']) }}" 
-                               class="quick-btn quick-btn-green">
-                                <i class="bi bi-check-circle"></i>
-                                <span>Order Selesai</span>
-                            </a>
-                        </div>
-                        <div class="col-lg col-md-6">
-                            <a href="{{ route('report.transactions', ['status' => 'pending']) }}" 
-                               class="quick-btn quick-btn-orange">
-                                <i class="bi bi-hourglass-split"></i>
-                                <span>Pembayaran Pending</span>
-                            </a>
-                        </div>
-                        <div class="col-lg col-md-6">
-                            <a href="{{ route('report.revenue', ['start_date' => now()->startOfMonth()->format('Y-m-d'), 'end_date' => now()->format('Y-m-d')]) }}" 
-                               class="quick-btn quick-btn-cyan">
-                                <i class="bi bi-graph-up"></i>
-                                <span>Pendapatan Bulan Ini</span>
-                            </a>
-                        </div>
-                        <div class="col-lg col-md-6">
-                            <a href="{{ route('report.customers', ['sort_by' => 'total_spent']) }}" 
-                               class="quick-btn quick-btn-purple">
-                                <i class="bi bi-star-fill"></i>
-                                <span>Top Customers</span>
-                            </a>
-                        </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Trend -->
+    <div class="col-lg-6">
+        <div class="data-card" data-aos="fade-left">
+            <div class="card-header-custom">
+                <h4><i class="bi bi-graph-up"></i> Tren Pendapatan 7 Hari</h4>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-light active">7 Hari</button>
+                    <button class="btn btn-outline-light">30 Hari</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Dashboard -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="data-card activity-card" data-aos="zoom-in" data-aos-delay="0">
+            <div class="activity-icon" style="background: rgba(34, 197, 94, 0.2);">
+                <i class="bi bi-cart-plus" style="color: #22c55e;"></i>
+            </div>
+            <h3 class="activity-value">-</h3>
+            <p class="activity-label">Order Baru Hari Ini</p>
+            <div class="activity-footer">
+                <i class="bi bi-calendar-check"></i>
+                <span>Update: {{ now()->format('H:i') }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="data-card activity-card" data-aos="zoom-in" data-aos-delay="100">
+            <div class="activity-icon" style="background: rgba(59, 130, 246, 0.2);">
+                <i class="bi bi-credit-card" style="color: #60a5fa;"></i>
+            </div>
+            <h3 class="activity-value">-</h3>
+            <p class="activity-label">Transaksi Hari Ini</p>
+            <div class="activity-footer">
+                <i class="bi bi-clock"></i>
+                <span>Update: {{ now()->format('H:i') }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="data-card activity-card" data-aos="zoom-in" data-aos-delay="200">
+            <div class="activity-icon" style="background: rgba(168, 85, 247, 0.2);">
+                <i class="bi bi-cash" style="color: #c084fc;"></i>
+            </div>
+            <h3 class="activity-value">Rp -</h3>
+            <p class="activity-label">Pendapatan Hari Ini</p>
+            <div class="activity-footer">
+                <i class="bi bi-arrow-up-circle"></i>
+                <span>Update: {{ now()->format('H:i') }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Navigation Grid -->
+<div class="data-card" data-aos="fade-up">
+    <div class="card-header-custom">
+        <h4><i class="bi bi-folder-fill"></i> Akses Cepat Laporan</h4>
+        <small style="color: rgba(255,255,255,0.6);">Klik untuk melihat detail laporan</small>
+    </div>
+    <div class="row g-4 mt-2">
+        <!-- Transaksi -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-nav-card" onclick="window.location.href='{{ route('report.transactions') }}'">
+                <div class="report-nav-header">
+                    <div class="report-nav-icon" style="background: rgba(34, 197, 94, 0.2);">
+                        <i class="bi bi-receipt-cutoff" style="color: #22c55e;"></i>
+                    </div>
+                    <i class="bi bi-arrow-right-circle report-nav-arrow"></i>
+                </div>
+                <div class="report-nav-content">
+                    <h5>Laporan Transaksi</h5>
+                    <p>Detail pembayaran dan konfirmasi transaksi pelanggan</p>
+                    <div class="report-stats">
+                        <span><i class="bi bi-check-circle"></i> {{ $stats['total_transactions'] }} transaksi</span>
+                    </div>
+                    <div class="export-buttons mt-3" onclick="event.stopPropagation();">
+                        <a href="{{ route('report.transactions.pdf') }}" class="export-btn export-btn-pdf">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                            <span>PDF</span>
+                        </a>
+                        <a href="{{ route('report.transactions.excel') }}" class="export-btn export-btn-excel">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                            <span>Excel</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-nav-card" onclick="window.location.href='{{ route('report.orders') }}'">
+                <div class="report-nav-header">
+                    <div class="report-nav-icon" style="background: rgba(59, 130, 246, 0.2);">
+                        <i class="bi bi-cart-check" style="color: #60a5fa;"></i>
+                    </div>
+                    <i class="bi bi-arrow-right-circle report-nav-arrow"></i>
+                </div>
+                <div class="report-nav-content">
+                    <h5>Laporan Pesanan</h5>
+                    <p>Monitoring status dan detail semua pesanan laundry</p>
+                    <div class="report-stats">
+                        <span><i class="bi bi-cart"></i> {{ $stats['total_orders'] }} pesanan</span>
+                    </div>
+                    <div class="export-buttons mt-3" onclick="event.stopPropagation();">
+                        <a href="{{ route('report.orders.pdf') }}" class="export-btn export-btn-pdf">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                            <span>PDF</span>
+                        </a>
+                        <a href="{{ route('report.orders.excel') }}" class="export-btn export-btn-excel">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                            <span>Excel</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-nav-card" onclick="window.location.href='{{ route('report.revenue') }}'">
+                <div class="report-nav-header">
+                    <div class="report-nav-icon" style="background: rgba(168, 85, 247, 0.2);">
+                        <i class="bi bi-graph-up-arrow" style="color: #c084fc;"></i>
+                    </div>
+                    <i class="bi bi-arrow-right-circle report-nav-arrow"></i>
+                </div>
+                <div class="report-nav-content">
+                    <h5>Laporan Pendapatan</h5>
+                    <p>Analisis revenue harian, mingguan, dan bulanan</p>
+                    <div class="report-stats">
+                        <span><i class="bi bi-cash-stack"></i> Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}</span>
+                    </div>
+                    <div class="export-buttons mt-3" onclick="event.stopPropagation();">
+                        <a href="{{ route('report.revenue.pdf') }}" class="export-btn export-btn-pdf">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                            <span>PDF</span>
+                        </a>
+                        <a href="{{ route('report.revenue.excel') }}" class="export-btn export-btn-excel">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                            <span>Excel</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customers -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-nav-card" onclick="window.location.href='{{ route('report.customers') }}'">
+                <div class="report-nav-header">
+                    <div class="report-nav-icon" style="background: rgba(249, 115, 22, 0.2);">
+                        <i class="bi bi-people-fill" style="color: #fb923c;"></i>
+                    </div>
+                    <i class="bi bi-arrow-right-circle report-nav-arrow"></i>
+                </div>
+                <div class="report-nav-content">
+                    <h5>Laporan Pelanggan</h5>
+                    <p>Data pelanggan setia dan histori pembelian lengkap</p>
+                    <div class="report-stats">
+                        <span><i class="bi bi-person-check"></i> Database lengkap</span>
+                    </div>
+                    <div class="export-buttons mt-3" onclick="event.stopPropagation();">
+                        <a href="{{ route('report.customers.excel') }}" class="export-btn export-btn-excel">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                            <span>Excel</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-nav-card" onclick="window.location.href='{{ route('report.services') }}'">
+                <div class="report-nav-header">
+                    <div class="report-nav-icon" style="background: rgba(236, 72, 153, 0.2);">
+                        <i class="bi bi-star-fill" style="color: #f472b6;"></i>
+                    </div>
+                    <i class="bi bi-arrow-right-circle report-nav-arrow"></i>
+                </div>
+                <div class="report-nav-content">
+                    <h5>Layanan Populer</h5>
+                    <p>Analisis layanan terlaris dan favorit pelanggan</p>
+                    <div class="report-stats">
+                        <span><i class="bi bi-trophy"></i> Top services</span>
                     </div>
                 </div>
             </div>
@@ -393,700 +325,919 @@
     </div>
 </div>
 
+<!-- Quick Actions -->
+<div class="row g-4 mt-2">
+    <div class="col-lg-12">
+        <div class="data-card">
+            <div class="card-header-custom">
+                <h4><i class="bi bi-lightning-charge-fill"></i> Aksi Cepat</h4>
+            </div>
+            <div class="quick-actions-grid">
+                <button class="quick-action-btn" onclick="window.location.href='{{ route('report.transactions') }}'">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Lihat Transaksi</span>
+                </button>
+                <button class="quick-action-btn" onclick="window.location.href='{{ route('report.orders') }}'">
+                    <i class="bi bi-list-check"></i>
+                    <span>Lihat Pesanan</span>
+                </button>
+                <button class="quick-action-btn" onclick="window.location.href='{{ route('report.revenue') }}'">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Analisis Revenue</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-download me-2"></i>Export Laporan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p style="color: rgba(255,255,255,0.7);">Pilih jenis laporan yang ingin di-export:</p>
+                <div class="export-options">
+                    <a href="{{ route('report.transactions.pdf') }}" class="export-option">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <div>
+                            <strong>Transaksi (PDF)</strong>
+                            <small>Laporan transaksi lengkap</small>
+                        </div>
+                    </a>
+                    <a href="{{ route('report.transactions.excel') }}" class="export-option">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        <div>
+                            <strong>Transaksi (Excel)</strong>
+                            <small>Data transaksi dalam spreadsheet</small>
+                        </div>
+                    </a>
+                    <a href="{{ route('report.orders.pdf') }}" class="export-option">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <div>
+                            <strong>Pesanan (PDF)</strong>
+                            <small>Laporan pesanan lengkap</small>
+                        </div>
+                    </a>
+                    <a href="{{ route('report.orders.excel') }}" class="export-option">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        <div>
+                            <strong>Pesanan (Excel)</strong>
+                            <small>Data pesanan dalam spreadsheet</small>
+                        </div>
+                    </a>
+                    <a href="{{ route('report.revenue.pdf') }}" class="export-option">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <div>
+                            <strong>Pendapatan (PDF)</strong>
+                            <small>Laporan revenue lengkap</small>
+                        </div>
+                    </a>
+                    <a href="{{ route('report.revenue.excel') }}" class="export-option">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        <div>
+                            <strong>Pendapatan (Excel)</strong>
+                            <small>Data revenue dalam spreadsheet</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
-    /* Header Card */
-    .header-card {
-        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
-        border-radius: 20px !important;
+    .header-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-outline-light {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #fff;
+    }
+
+    .stat-trend {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 0.5rem;
+    }
+
+    .stat-trend i {
+        font-size: 1.25rem;
+    }
+
+    .card-header-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header-custom h4 {
+        margin: 0;
+    }
+
+    .chart-container {
         position: relative;
-        overflow: hidden;
+        height: 250px;
     }
-    
-    .header-card::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+
+    .status-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .status-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: rgba(34, 197, 94, 0.05);
+        border: 1px solid rgba(34, 197, 94, 0.1);
+        border-radius: 0.75rem;
+    }
+
+    .status-indicator {
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
+        box-shadow: 0 0 10px currentColor;
     }
-    
-    .icon-wrapper-large {
-        width: 70px;
-        height: 70px;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border-radius: 18px;
+
+    .activity-card {
+        text-align: center;
+        padding: 2rem 1.5rem !important;
+    }
+
+    .activity-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 32px;
-        color: white;
-        position: relative;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
     }
-    
-    .icon-pulse {
+
+    .activity-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .activity-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .activity-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.85rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(34, 197, 94, 0.1);
+    }
+
+    .report-nav-card {
+        background: linear-gradient(135deg, rgba(26, 58, 26, 0.5) 0%, rgba(22, 50, 30, 0.5) 100%);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .report-nav-card::before {
+        content: '';
         position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 18px;
-        background: rgba(255,255,255,0.3);
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 0.5; }
-        50% { transform: scale(1.1); opacity: 0; }
-    }
-    
-    .date-badge {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        padding: 12px 24px;
-        border-radius: 50px;
-        color: white;
-        font-weight: 500;
-        display: inline-block;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    .status-indicator {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        justify-content: flex-end;
-    }
-    
-    .pulse-dot {
-        width: 8px;
-        height: 8px;
-        background: #10b981;
-        border-radius: 50%;
-        animation: pulse-dot 2s infinite;
-        box-shadow: 0 0 10px #10b981;
-    }
-    
-    @keyframes pulse-dot {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; transform: scale(1.2); }
-    }
-
-    /* Modern Statistics Cards */
-    .stat-card {
-        border-radius: 20px;
-        overflow: hidden;
-        position: relative;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        height: 100%;
-    }
-    
-    .stat-card-inner {
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        border-radius: 20px;
-        padding: 24px;
-        position: relative;
-        height: 100%;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-    
-    .stat-card-blue .stat-card-inner {
-        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    }
-    
-    .stat-card-cyan .stat-card-inner {
-        background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
-    }
-    
-    .stat-card-green .stat-card-inner {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    }
-    
-    .stat-card-purple .stat-card-inner {
-        background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-    }
-    
-    .stat-card-orange .stat-card-inner {
-        background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.15) !important;
-    }
-    
-    .stat-card:hover .stat-overlay {
-        opacity: 1;
-    }
-    
-    .stat-background {
-        position: absolute;
-        top: -20px;
-        right: -20px;
-        font-size: 120px;
-        opacity: 0.05;
-        transition: all 0.4s ease;
-    }
-    
-    .stat-card:hover .stat-background {
-        transform: rotate(15deg) scale(1.1);
-        opacity: 0.08;
-    }
-    
-    .stat-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-    }
-    
-    .stat-card-blue .stat-overlay { background: linear-gradient(90deg, #3b82f6, #2563eb); }
-    .stat-card-cyan .stat-overlay { background: linear-gradient(90deg, #06b6d4, #0891b2); }
-    .stat-card-green .stat-overlay { background: linear-gradient(90deg, #10b981, #059669); }
-    .stat-card-purple .stat-overlay { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
-    .stat-card-orange .stat-overlay { background: linear-gradient(90deg, #f97316, #ea580c); }
-    
-    .stat-content {
-        position: relative;
-        z-index: 1;
-    }
-    
-    .stat-icon-modern {
-        width: 56px;
-        height: 56px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 26px;
-        color: white;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-        transition: all 0.3s ease;
-    }
-    
-    .stat-card:hover .stat-icon-modern {
-        transform: scale(1.05);
-    }
-    
-    .stat-card-blue .stat-icon-modern { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-    .stat-card-cyan .stat-icon-modern { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-    .stat-card-green .stat-icon-modern { background: linear-gradient(135deg, #10b981, #059669); }
-    .stat-card-purple .stat-icon-modern { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-    .stat-card-orange .stat-icon-modern { background: linear-gradient(135deg, #f97316, #ea580c); }
-    
-    .badge-modern {
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .badge-blue { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
-    .badge-cyan { background: rgba(6, 182, 212, 0.15); color: #0891b2; }
-    .badge-green { background: rgba(16, 185, 129, 0.15); color: #059669; }
-    .badge-purple { background: rgba(139, 92, 246, 0.15); color: #7c3aed; }
-    .badge-orange { background: rgba(249, 115, 22, 0.15); color: #ea580c; }
-    
-    .stat-label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .stat-value {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #1e293b;
-        line-height: 1;
-    }
-    
-    .stat-info {
-        padding-top: 12px;
-        border-top: 2px solid #f1f5f9;
-        margin-top: 12px;
-    }
-    
-    .trend-up, .trend-warning {
-        font-size: 13px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-    
-    .trend-up { color: #10b981; }
-    .trend-warning { color: #f59e0b; }
-
-    /* Section Header */
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 20px;
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        border-radius: 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        border: 1px solid #e2e8f0;
-    }
-    
-    .section-header-icon {
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        color: white;
-    }
-
-    /* Modern Report Cards */
-    .report-card-modern {
-        border-radius: 20px;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        height: 100%;
-    }
-    
-    .report-card-modern::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: all 0.4s ease;
-    }
-    
-    .report-blue::before {
-        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    }
-    
-    .report-cyan::before {
-        background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
-    }
-    
-    .report-green::before {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    }
-    
-    .report-orange::before {
-        background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-    }
-    
-    .report-purple::before {
-        background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-    }
-    
-    .report-card-modern:hover::before {
-        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-    }
-    
-    .report-card-modern:hover {
-        transform: translateY(-8px);
-    }
-    
-    .report-card-glow {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-    }
-    
-    .report-card-modern:hover .report-card-glow {
-        opacity: 1;
-    }
-    
-    .report-blue .report-card-glow { background: linear-gradient(90deg, #3b82f6, #2563eb); }
-    .report-cyan .report-card-glow { background: linear-gradient(90deg, #06b6d4, #0891b2); }
-    .report-green .report-card-glow { background: linear-gradient(90deg, #10b981, #059669); }
-    .report-orange .report-card-glow { background: linear-gradient(90deg, #f97316, #ea580c); }
-    .report-purple .report-card-glow { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
-    
-    .report-card-content {
-        position: relative;
-        padding: 28px;
-        z-index: 1;
-    }
-    
-    .report-icon-circle {
-        width: 70px;
-        height: 70px;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        color: white;
-        margin-bottom: 20px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        transition: all 0.3s ease;
-    }
-    
-    .report-card-modern:hover .report-icon-circle {
-        transform: scale(1.05) rotate(5deg);
-    }
-    
-    .report-blue .report-icon-circle { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-    .report-cyan .report-icon-circle { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-    .report-green .report-icon-circle { background: linear-gradient(135deg, #10b981, #059669); }
-    .report-orange .report-icon-circle { background: linear-gradient(135deg, #f97316, #ea580c); }
-    .report-purple .report-icon-circle { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-    
-    .report-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 12px;
-    }
-    
-    .report-description {
-        color: #64748b;
-        font-size: 14px;
-        line-height: 1.6;
-        margin-bottom: 24px;
-        min-height: 48px;
-    }
-    
-    .report-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .btn-report {
-        padding: 12px 24px;
-        border-radius: 12px;
-        font-weight: 600;
-        border: none;
-        transition: all 0.3s ease;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    .btn-report:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    }
-    
-    .btn-export {
-        flex: 1;
-        padding: 10px 16px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-    
-    .btn-pdf {
-        background: rgba(220, 38, 38, 0.1);
-        color: #dc2626;
-        border-color: rgba(220, 38, 38, 0.2);
-    }
-    
-    .btn-pdf:hover {
-        background: #dc2626;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-    }
-    
-    .btn-excel {
-        background: rgba(16, 185, 129, 0.1);
-        color: #059669;
-        border-color: rgba(16, 185, 129, 0.2);
-    }
-    
-    .btn-excel:hover {
-        background: #10b981;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-    
-    .btn-purple {
-        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-        color: white;
-        border: none;
-    }
-    
-    .btn-purple:hover {
-        background: linear-gradient(135deg, #7c3aed, #6d28d9);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-    }
-
-    /* Quick Actions Modern */
-    .quick-actions-modern {
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        overflow: hidden;
-        border: 1px solid #e2e8f0;
-    }
-    
-    .quick-actions-header {
-        padding: 24px 28px;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        border-bottom: 2px solid #e2e8f0;
-    }
-    
-    .quick-icon {
-        width: 48px;
-        height: 48px;
-        background: linear-gradient(135deg, #fbbf24, #f59e0b);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        color: white;
-        margin-right: 16px;
-        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
-    }
-    
-    .quick-actions-body {
-        padding: 28px;
-    }
-    
-    .quick-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        padding: 24px 16px;
-        border-radius: 16px;
-        text-decoration: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-        border: 2px solid #e2e8f0;
-    }
-    
-    .quick-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, transparent 50%);
         opacity: 0;
         transition: opacity 0.3s ease;
     }
-    
-    .quick-btn:hover::before {
-        opacity: 1;
-    }
-    
-    .quick-btn:hover {
+
+    .report-nav-card:hover {
+        border-color: rgba(34, 197, 94, 0.5);
         transform: translateY(-5px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        border-color: transparent;
-    }
-    
-    .quick-btn i {
-        font-size: 28px;
-        transition: all 0.3s ease;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .quick-btn span {
-        font-size: 13px;
-        font-weight: 600;
-        text-align: center;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .quick-btn-blue { border-color: rgba(59, 130, 246, 0.2); }
-    .quick-btn-blue::before { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1)); }
-    .quick-btn-blue i { color: #3b82f6; }
-    .quick-btn-blue span { color: #2563eb; }
-    .quick-btn-blue:hover { box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2); }
-    
-    .quick-btn-green { border-color: rgba(16, 185, 129, 0.2); }
-    .quick-btn-green::before { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1)); }
-    .quick-btn-green i { color: #10b981; }
-    .quick-btn-green span { color: #059669; }
-    .quick-btn-green:hover { box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2); }
-    
-    .quick-btn-orange { border-color: rgba(249, 115, 22, 0.2); }
-    .quick-btn-orange::before { background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.1)); }
-    .quick-btn-orange i { color: #f97316; }
-    .quick-btn-orange span { color: #ea580c; }
-    .quick-btn-orange:hover { box-shadow: 0 8px 24px rgba(249, 115, 22, 0.2); }
-    
-    .quick-btn-cyan { border-color: rgba(6, 182, 212, 0.2); }
-    .quick-btn-cyan::before { background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1)); }
-    .quick-btn-cyan i { color: #06b6d4; }
-    .quick-btn-cyan span { color: #0891b2; }
-    .quick-btn-cyan:hover { box-shadow: 0 8px 24px rgba(6, 182, 212, 0.2); }
-    
-    .quick-btn-purple { border-color: rgba(139, 92, 246, 0.2); }
-    .quick-btn-purple::before { background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.1)); }
-    .quick-btn-purple i { color: #8b5cf6; }
-    .quick-btn-purple span { color: #7c3aed; }
-    .quick-btn-purple:hover { box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2); }
-    
-    .quick-btn:hover i {
-        transform: scale(1.15);
+        box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
     }
 
-    /* Responsive Design */
-    @media (max-width: 1200px) {
-        .stat-value {
-            font-size: 1.75rem;
-        }
-        
-        .report-icon-circle {
-            width: 60px;
-            height: 60px;
-            font-size: 28px;
-        }
+    .report-nav-card:hover::before {
+        opacity: 1;
     }
-    
+
+    .report-nav-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .report-nav-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .report-nav-arrow {
+        font-size: 1.5rem;
+        color: rgba(34, 197, 94, 0.5);
+        transition: all 0.3s ease;
+    }
+
+    .report-nav-card:hover .report-nav-arrow {
+        color: #22c55e;
+        transform: translateX(5px);
+    }
+
+    .report-nav-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .report-nav-content h5 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .report-nav-content p {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .report-stats {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(34, 197, 94, 0.1);
+    }
+
+    .report-stats i {
+        color: #16a34a;
+    }
+
+    .export-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .export-btn {
+        background: rgba(34, 197, 94, 0.15);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #22c55e;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .export-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .export-btn:hover::before {
+        left: 100%;
+    }
+
+    .export-btn i {
+        font-size: 1.1rem;
+        transition: transform 0.3s ease;
+    }
+
+    .export-btn:hover i {
+        transform: scale(1.1);
+    }
+
+    /* PDF Button - Red Theme */
+    .export-btn-pdf {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+    }
+
+    .export-btn-pdf:hover {
+        background: rgba(239, 68, 68, 0.25);
+        border-color: #ef4444;
+        color: #fca5a5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Excel Button - Green Theme */
+    .export-btn-excel {
+        background: rgba(34, 197, 94, 0.15);
+        border-color: rgba(34, 197, 94, 0.3);
+        color: #22c55e;
+    }
+
+    .export-btn-excel:hover {
+        background: rgba(34, 197, 94, 0.25);
+        border-color: #16a34a;
+        color: #4ade80;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .export-btn span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .special-card {
+        background: linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(202, 138, 4, 0.1) 100%);
+        border-color: rgba(234, 179, 8, 0.3);
+    }
+
+    .special-card:hover {
+        border-color: rgba(234, 179, 8, 0.5);
+        box-shadow: 0 10px 30px rgba(234, 179, 8, 0.3);
+    }
+
+    .special-card .report-nav-arrow {
+        color: rgba(234, 179, 8, 0.5);
+    }
+
+    .special-card:hover .report-nav-arrow {
+        color: #fbbf24;
+    }
+
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .quick-action-btn {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        color: #fff;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .quick-action-btn i {
+        font-size: 2rem;
+        color: #16a34a;
+    }
+
+    .quick-action-btn:hover {
+        background: rgba(34, 197, 94, 0.2);
+        border-color: #16a34a;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
+    }
+
     @media (max-width: 768px) {
-        .icon-wrapper-large {
+        .header-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .header-actions button {
+            width: 100%;
+        }
+
+        .page-header .d-flex {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .status-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .activity-card {
+            padding: 1.5rem 1rem !important;
+        }
+
+        .activity-icon {
             width: 60px;
             height: 60px;
-            font-size: 28px;
-        }
-        
-        .display-6 {
             font-size: 1.5rem;
         }
-        
-        .stat-value {
-            font-size: 1.5rem;
-        }
-        
-        .stat-icon-modern {
-            width: 48px;
-            height: 48px;
-            font-size: 22px;
-        }
-        
-        .report-card-content {
-            padding: 20px;
-        }
-        
-        .report-title {
-            font-size: 1.1rem;
-        }
-        
-        .report-description {
-            font-size: 13px;
-            min-height: auto;
-        }
-        
-        .quick-btn {
-            padding: 20px 12px;
-        }
-        
-        .quick-btn i {
-            font-size: 24px;
-        }
-        
-        .quick-btn span {
-            font-size: 12px;
+
+        .activity-value {
+            font-size: 2rem;
         }
     }
+</style>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- AOS Animation -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+
+    // Order Status Chart
+    const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+    const orderStatusChart = new Chart(orderStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Selesai', 'Pending'],
+            datasets: [{
+                data: [{{ $stats['completed_orders'] }}, {{ $stats['pending_payments'] }}],
+                backgroundColor: [
+                    'rgba(34, 197, 94, 0.8)',
+                    'rgba(249, 115, 22, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(249, 115, 22, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(10, 31, 10, 0.9)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(34, 197, 94, 0.5)',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: true,
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += context.parsed + ' orders';
+                            return label;
+                        }
+                    }
+                }
+            },
+            cutout: '70%'
+        }
+    });
+
+    // Revenue Trend Chart
+    const revenueTrendCtx = document.getElementById('revenueTrendChart').getContext('2d');
     
-    @media (max-width: 576px) {
-        .date-badge {
-            padding: 10px 16px;
-            font-size: 13px;
+    // Sample data - replace with actual data from backend
+    const last7Days = [];
+    const revenueData = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        last7Days.push(date.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric' }));
+        // Random data for demo - replace with actual data
+        revenueData.push(Math.floor(Math.random() * 5000000) + 2000000);
+    }
+
+    const revenueTrendChart = new Chart(revenueTrendCtx, {
+        type: 'line',
+        data: {
+            labels: last7Days,
+            datasets: [{
+                label: 'Pendapatan',
+                data: revenueData,
+                borderColor: 'rgba(168, 85, 247, 1)',
+                backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: 'rgba(168, 85, 247, 1)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(10, 31, 10, 0.9)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(168, 85, 247, 0.5)',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(34, 197, 94, 0.1)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        callback: function(value) {
+                            return 'Rp ' + (value / 1000000).toFixed(1) + 'jt';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.6)'
+                    }
+                }
+            }
         }
+    });
+
+    // Auto refresh every 5 minutes
+    setInterval(function() {
+        // Show notification
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success position-fixed';
+        notification.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Data diperbarui';
+        document.body.appendChild(notification);
         
-        .section-header {
-            padding: 16px;
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }, 300000); // 5 minutes
+
+    // Print functionality
+    function printReport(type) {
+        window.print();
+    }
+
+    // Period selector for revenue chart
+    document.querySelectorAll('.btn-group button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update chart based on selection
+            // This would fetch new data from server in production
+            const period = this.textContent.trim();
+            console.log('Selected period:', period);
+        });
+    });
+
+    // Animate numbers on load
+    function animateValue(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const value = Math.floor(progress * (end - start) + start);
+            
+            // Format dengan Rupiah jika element punya class untuk rupiah
+            if (element.closest('.stat-card.purple')) {
+                element.textContent = 'Rp ' + value.toLocaleString('id-ID');
+            } else {
+                element.textContent = value.toLocaleString('id-ID');
+            }
+            
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Animate stat cards on load
+    window.addEventListener('load', function() {
+        document.querySelectorAll('.stat-card-info h3').forEach((el, index) => {
+            const text = el.textContent.trim();
+            const match = text.match(/[\d.,]+/g);
+            if (match) {
+                // Ambil semua angka dan hapus pemisah
+                const numberStr = match.join('').replace(/\./g, '').replace(/,/g, '');
+                const number = parseInt(numberStr);
+                
+                if (!isNaN(number)) {
+                    // Simpan prefix (Rp) jika ada
+                    const hasRp = text.includes('Rp');
+                    el.textContent = hasRp ? 'Rp 0' : '0';
+                    
+                    setTimeout(() => {
+                        animateValue(el, 0, number, 1500);
+                    }, index * 100);
+                }
+            }
+        });
+    });
+
+    // Add pulse animation to pending badge
+    setInterval(() => {
+        document.querySelectorAll('.badge-warning').forEach(badge => {
+            badge.style.animation = 'pulse 1s ease-in-out';
+            setTimeout(() => {
+                badge.style.animation = '';
+            }, 1000);
+        });
+    }, 5000);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Alt + R = Refresh
+        if (e.altKey && e.key === 'r') {
+            e.preventDefault();
+            location.reload();
         }
-        
-        .section-header-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
+        // Alt + T = Transactions Report
+        if (e.altKey && e.key === 't') {
+            e.preventDefault();
+            window.location.href = '{{ route("report.transactions") }}';
         }
-        
-        .quick-actions-header,
-        .quick-actions-body {
-            padding: 20px;
+        // Alt + O = Orders Report
+        if (e.altKey && e.key === 'o') {
+            e.preventDefault();
+            window.location.href = '{{ route("report.orders") }}';
+        }
+    });
+</script>
+
+<style>
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
         }
     }
-    
-    /* Animation */
-    @keyframes fadeInUp {
+
+    /* Print styles */
+    @media print {
+        .header-actions,
+        .quick-actions-grid,
+        .report-nav-card,
+        .modal {
+            display: none !important;
+        }
+
+        .stat-card,
+        .data-card {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        body {
+            background: white !important;
+            color: black !important;
+        }
+
+        .stat-card,
+        .data-card {
+            border: 1px solid #ddd !important;
+            background: white !important;
+        }
+    }
+
+    /* Smooth hover transitions */
+    * {
+        transition: all 0.3s ease;
+    }
+
+    /* Loading state */
+    .loading {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    /* Tooltip styles */
+    [data-bs-toggle="tooltip"] {
+        cursor: help;
+    }
+
+    /* Focus styles for accessibility */
+    button:focus,
+    a:focus {
+        outline: 2px solid rgba(34, 197, 94, 0.5);
+        outline-offset: 2px;
+    }
+
+    /* Responsive table wrapper */
+    .table-responsive {
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+
+    /* Custom scrollbar for modal */
+    .modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background: rgba(34, 197, 94, 0.05);
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background: rgba(34, 197, 94, 0.3);
+        border-radius: 4px;
+    }
+
+    /* Shimmer effect for loading */
+    @keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    .shimmer {
+        animation: shimmer 2s infinite linear;
+        background: linear-gradient(
+            to right,
+            rgba(34, 197, 94, 0.05) 0%,
+            rgba(34, 197, 94, 0.15) 50%,
+            rgba(34, 197, 94, 0.05) 100%
+        );
+        background-size: 1000px 100%;
+    }
+
+    /* Status indicator animations */
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .status-indicator.active {
+        animation: blink 2s infinite;
+    }
+
+    /* Card entrance animations */
+    @keyframes slideInUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
-    
+
     .stat-card,
-    .report-card-modern,
-    .quick-actions-modern {
-        animation: fadeInUp 0.6s ease-out backwards;
+    .data-card,
+    .report-nav-card {
+        animation: slideInUp 0.6s ease-out backwards;
     }
-    
+
     .stat-card:nth-child(1) { animation-delay: 0.1s; }
     .stat-card:nth-child(2) { animation-delay: 0.2s; }
     .stat-card:nth-child(3) { animation-delay: 0.3s; }
     .stat-card:nth-child(4) { animation-delay: 0.4s; }
-    .stat-card:nth-child(5) { animation-delay: 0.5s; }
-    
-    .report-card-modern:nth-child(1) { animation-delay: 0.2s; }
-    .report-card-modern:nth-child(2) { animation-delay: 0.3s; }
-    .report-card-modern:nth-child(3) { animation-delay: 0.4s; }
-    .report-card-modern:nth-child(4) { animation-delay: 0.5s; }
-    .report-card-modern:nth-child(5) { animation-delay: 0.6s; }
-    
-    /* Smooth Scroll */
-    html {
-        scroll-behavior: smooth;
+
+    /* Gradient text animation */
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
-    
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-        width: 10px;
+
+    .page-header h1 {
+        background-size: 200% auto;
+        animation: gradientShift 3s ease infinite;
     }
-    
-    ::-webkit-scrollbar-track {
-        background: #f1f5f9;
+
+    /* Floating animation for icons */
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
     }
-    
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        border-radius: 5px;
+
+    .stat-card-icon {
+        animation: float 3s ease-in-out infinite;
     }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #2563eb, #1e40af);
+
+    .stat-card:hover .stat-card-icon {
+        animation-play-state: paused;
+    }
+
+    /* Success notification animation */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .alert.position-fixed {
+        animation: slideInRight 0.5s ease-out;
+    }
+
+    /* Badge pulse animation */
+    .badge-success {
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Glow effect on hover */
+    .report-nav-card:hover {
+        box-shadow: 
+            0 10px 30px rgba(34, 197, 94, 0.3),
+            0 0 20px rgba(34, 197, 94, 0.2) inset;
+    }
+
+    .special-card:hover {
+        box-shadow: 
+            0 10px 30px rgba(234, 179, 8, 0.3),
+            0 0 20px rgba(234, 179, 8, 0.2) inset;
     }
 </style>
 @endsection
