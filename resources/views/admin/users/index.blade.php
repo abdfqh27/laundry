@@ -3,6 +3,42 @@
 @section('title', 'Kelola User')
 
 @section('content')
+<style>
+    /* Custom styling for select dropdown */
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        padding-right: 2.5rem;
+    }
+    
+    select:focus {
+        outline: none;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    select:active {
+        background-color: rgba(99, 102, 241, 0.1) !important;
+    }
+    
+    select option {
+        background-color: #1f2937;
+        color: white;
+        padding: 0.5rem;
+    }
+    
+    select option:hover {
+        background-color: #6366f1;
+    }
+    
+    input[type="text"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+</style>
+
 <div class="page-header">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h1>Kelola User</h1>
@@ -36,7 +72,8 @@
                 border-radius: 0.5rem;
                 color: white;
                 font-size: 0.9rem;
-            " onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255, 255, 255, 0.1)'">
+                transition: all 0.3s ease;
+            ">
         </div>
 
         <!-- Role Filter -->
@@ -49,7 +86,9 @@
                 border-radius: 0.5rem;
                 color: white;
                 font-size: 0.9rem;
-            " onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255, 255, 255, 0.1)'">
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">
                 <option value="">Semua Role</option>
                 <option value="administrator" {{ request('role') === 'administrator' ? 'selected' : '' }}>Administrator</option>
                 <option value="karyawan" {{ request('role') === 'karyawan' ? 'selected' : '' }}>Karyawan</option>
@@ -67,7 +106,9 @@
                 border-radius: 0.5rem;
                 color: white;
                 font-size: 0.9rem;
-            " onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255, 255, 255, 0.1)'">
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">
                 <option value="">Semua Status</option>
                 <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Aktif</option>
                 <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Nonaktif</option>
